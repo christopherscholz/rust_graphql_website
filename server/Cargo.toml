@@ -1,0 +1,15 @@
+[package]
+name = "graphql_server"
+version = "0.1.0"
+edition = "2021"
+authors = ["Christopher Scholz <github@christopher-scholz.com>"]
+description = "GraphQL API Server of the static personal website for Christopher Scholz, which is build with Rocket."
+repository = "https://github.com/christopherscholz/rust_graphql_website/server"
+license = "MIT"
+
+[dependencies]
+rocket = {version = "0.5.0-rc.2", features= []}
+juniper = {version = "0.15.10", features= ["uuid", "chrono"]}
+juniper_rocket = "0.8.2"
+chrono = { version = "0.4.22", features= ["serde"] }
+uuid = { version ="0.8.2", features= ["v4","serde"]}
