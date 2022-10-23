@@ -1,6 +1,6 @@
-use std::{collections::HashMap};
+use std::collections::HashMap;
 
-use juniper::{graphql_interface, graphql_object, Context, GraphQLEnum};
+use juniper::{GraphQLObject, graphql_object, graphql_interface, Context, GraphQLEnum};
 use chrono::{DateTime, Utc};
 use uuid::Uuid;
 
@@ -16,7 +16,7 @@ impl Query {
     }
 }
 
-#[derive(Clone)]
+#[derive(GraphQLObject)]
 pub struct Page {
     name: String,
     time: DateTime<Utc>,
@@ -40,25 +40,6 @@ impl Page {
     }
 }
 
-#[graphql_object()]
-impl Page {
-    pub fn name(&self) -> &str {
-        &self.name
-    }
-
-    pub fn time(&self) -> &DateTime<Utc> {
-        &self.time
-    }
-
-    pub fn blocks(&self) -> &Vec<BlockValue> {
-        &self.blocks
-    }
-
-    pub fn version(&self) -> &str {
-        &self.version
-    }
-}
-
 #[graphql_interface(for = [ParagraphBlock, HeaderBlock, ListBlock])]
 pub trait Block {
     fn id(&self) -> &Uuid;
@@ -68,7 +49,6 @@ pub trait Block {
 }
 
 impl Clone for BlockValue {
-    #[inline]
     fn clone(&self) -> Self {
         match self {
             Self::ParagraphBlock(p) => Self::ParagraphBlock(p.clone()),
@@ -213,7 +193,7 @@ impl ListBlock {
     }
 }
 
-#[derive(Clone)]
+#[derive(Clone, GraphQLObject)]
 pub struct ParagraphData {
     text: String,
 }
@@ -228,14 +208,7 @@ impl ParagraphData {
     }
 }
 
-#[graphql_object()]
-impl ParagraphData {
-    pub fn text(&self) -> &str {
-        &self.text
-    }
-}
-
-#[derive(Clone)]
+#[derive(Clone, GraphQLObject)]
 pub struct HeaderData {
     text: String,
     level: i32,
@@ -253,25 +226,13 @@ impl HeaderData {
     }
 }
 
-#[graphql_object()]
-impl HeaderData {
-    pub fn text(&self) -> &str {
-        &self.text
-    }
-
-    pub fn level(&self) -> &i32 {
-        &self.level
-    }
-}
-
-
 #[derive(GraphQLEnum, Clone, Copy, Debug, Eq, PartialEq)]
 pub enum ListStyle {
     UNORDERED,
     ORDERED,
 }
 
-#[derive(Clone)]
+#[derive(Clone, GraphQLObject)]
 pub struct ListData {
     style: ListStyle,
     items: Vec<String>,
@@ -289,18 +250,6 @@ impl ListData {
     }
 }
 
-#[graphql_object()]
-impl ListData {
-    pub fn style(&self) -> &ListStyle {
-        &self.style
-    }
-
-    pub fn items(&self) -> &Vec<String> {
-        &self.items
-    }
-}
-
-#[derive(Clone, Default)]
 pub struct Database {
     pages: HashMap<String, Page>
 }

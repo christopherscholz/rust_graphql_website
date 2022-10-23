@@ -56,9 +56,7 @@ impl Fairing for CORS {
 
 /// Catches option requests in order to get the CORS related Fairing triggered.
 #[options("/graphql")]
-fn all_options() {
-    /* Intentionally left empty */
-}
+fn options_graphql_handler() {}
 
 #[rocket::main]
 async fn main() {
@@ -71,10 +69,9 @@ async fn main() {
         ))
         .mount(
             "/",
-            rocket::routes![graphiql, get_graphql_handler, post_graphql_handler],
+            rocket::routes![graphiql, get_graphql_handler, post_graphql_handler, options_graphql_handler],
         )
         .attach(CORS)
-        .mount("/", routes![all_options])
         .launch()
         .await
         .expect("server to launch");
